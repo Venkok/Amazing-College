@@ -28,8 +28,8 @@ if (strstr($_SERVER['SERVER_NAME'], 'amazing-college.local')) {
 	
 } else {
 	define( 'DB_NAME', 'binkowsk_amazing_college' );
-	define( 'DB_USER', 'binkowsk_Yaroslav' );
-	define( 'DB_PASSWORD', 'iL}O[pjQZvyp' );
+	define( 'DB_USER', 'binkowsk_live' );
+	define( 'DB_PASSWORD', '@[@#-*hg=kv!' );
 	define( 'DB_HOST', 'localhost' );
 }
 
