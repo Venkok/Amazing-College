@@ -1,0 +1,159 @@
+import $ from 'jquery';
+
+class MyNotes {
+  constructor() {
+    this.events(); // execute method "events"
+  }
+
+  events() {
+    $('#my-notes').on('click', '.delete-note', this.deleteNote);
+    $('#my-notes').on('click', '.edit-note', this.editNote.bind(this));
+    $('#my-notes').on('click', '.update-note', this.updateNote.bind(this));
+    $('.submit-note').on('click', this.createNote.bind(this));
+  }
+
+  // METHODS
+  editNote(e) {
+    var thisNote = $(e.target).parents('li');
+    if (thisNote.data('state') == 'editable') {
+      // make read only
+      this.makeNoteReadOnly(thisNote);
+    } else {
+      // make editable
+      this.makeNoteEditable(thisNote);
+    }
+  }
+
+  makeNoteEditable(thisNote) {
+    thisNote
+      .find('.edit-note')
+      .html('<i class="fa fa-times" aria-hidden="true"></i>Cancel');
+    thisNote
+      .find('.note-title-field, .note-body-field')
+      .removeAttr('readonly')
+      .addClass('note-active-field');
+    thisNote.find('.update-note').addClass('update-note--visible');
+    thisNote.data('state', 'editable');
+  }
+
+  makeNoteReadOnly(thisNote) {
+    thisNote
+      .find('.edit-note')
+      .html('<i class="fa fa-pencil" aria-hidden="true"></i>Edit');
+    thisNote
+      .find('.note-title-field, .note-body-field')
+      .attr('readonly', 'readonly')
+      .removeClass('note-active-field');
+    thisNote.find('.update-note').removeClass('update-note--visible');
+    thisNote.data('state', 'cancel');
+  }
+
+  deleteNote(e) {
+    // e for event, you can name it other way
+    var thisNote = $(e.target).parents(
+      'li'
+    ); /* I want this variable to point towards the list item that contains the delete button that just got clicked on.
+         We can look within that parameter that contains information about what got clicked on. */
+    $.ajax({
+      // ajax method controls what type of request we are sending
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce); // checks if nonce is set (SECURITY)
+      },
+      url:
+        universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'), // universityData created in function.php and points to Homepage.And even though we named the data attribute data dash ID, when you use the query data method, you don't need to include the data dash.
+      type: 'DELETE',
+      success: (response) => {
+        // And in order to log out the server response, we need to pass this function that as a parameter.
+        thisNote.slideUp();
+        console.log('Congrats');
+        console.log(response); // Wordpress server response
+        if (response.userNoteCount < 5) {
+          $('.note-limit-message').removeClass('active');
+        }
+      }, // this is where we provide a function that we want to run if the request is successful.
+      error: (response) => {
+        console.log('Sorry');
+        console.log(response); // Wordpress server response
+      }, // function we run if request fails
+    });
+  }
+
+  updateNote(e) {
+    // e for event, you can name it other way
+    var thisNote = $(e.target).parents(
+      'li'
+    ); /* I want this variable to point towards the list item that contains the delete button that just got clicked on.
+         We can look within that parameter that contains information about what got clicked on. */
+    var ourUpdatedPost = {
+      title: thisNote.find('.note-title-field').val(),
+      content: thisNote.find('.note-body-field').val(),
+    };
+    $.ajax({
+      // ajax method controls what type of request we are sending
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce); // checks if nonce is set (SECURITY)
+      },
+      url:
+        universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'), // universityData created in function.php and points to Homepage.And even though we named the data attribute data dash ID, when you use the query data method, you don't need to include the data dash.
+      type: 'POST',
+      data: ourUpdatedPost,
+      success: (response) => {
+        // And in order to log out the server response, we need to pass this function that as a parameter.
+        this.makeNoteReadOnly(thisNote);
+        console.log('Congrats');
+        console.log(response); // Wordpress server response
+      }, // this is where we provide a function that we want to run if the request is successful.
+      error: (response) => {
+        console.log('Sorry');
+        console.log(response); // Wordpress server response
+      }, // function we run if request fails
+    });
+  }
+
+  createNote(e) {
+    // e for event, you can name it other way
+    var ourNewPost = {
+      title: $('.new-note-title').val(),
+      content: $('.new-note-body').val(),
+      status: 'publish',
+    };
+    $.ajax({
+      // ajax method controls what type of request we are sending
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce); // checks if nonce is set (SECURITY)
+      },
+      url: universityData.root_url + '/wp-json/wp/v2/note/', // if we send GET request this URL will fetch 10 most recent posts
+      type: 'POST',
+      data: ourNewPost,
+      success: (response) => {
+        // And in order to log out the server response, we need to pass this function that as a parameter.
+        $('.new-note-title, new-note-body').val(''); // emptying title and body fields if the post creation is successful
+        $(`
+        <li data-id="${response.id}">
+        <!-- Custom attribute which gets an id. This way we can access relevant ID number with JS and then DELETE, etc -->
+        <input readonly class="note-title-field" value="${response.title.raw}">
+        <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</span>
+        <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+        <textarea readonly class="note-body-field">${response.content.raw}</textarea>
+        <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span>
+    </li>
+
+        `)
+          .prependTo('#my-notes')
+          .hide()
+          .slideDown();
+        console.log('Congrats');
+        console.log(response); // Wordpress server response
+      }, // this is where we provide a function that we want to run if the request is successful.
+      error: (response) => {
+        if (response.responseText == 'You have reached your note limit') {
+          $('.note-limit-message').addClass('active');
+        }
+        console.log('Sorry');
+        console.log(response); // Wordpress server response
+      }, // function we run if request fails
+    });
+  }
+}
+
+export default MyNotes;

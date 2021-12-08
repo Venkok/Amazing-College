@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <PhpCSConfiguration beautifier_path="$USER_HOME$/WordPress-Coding-Standards/vendor/bin/phpcbf" standards="MySource;PEAR;PHPCSDebug;PHPCompatibility;PSR1;PSR12;PSR2;Squiz;WordPress;WordPress-Core;WordPress-Docs;WordPress-Extra;Zend" tool_path="$USER_HOME$/WordPress-Coding-Standards/vendor/bin/phpcs" />
+    </phpcs_settings>
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/../.." />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/composer" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/myclabs/deep-copy" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phar-io/version" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phar-io/manifest" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpspec/prophecy" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/php-token-stream" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/php-text-template" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/php-timer" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/php-file-iterator" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/php-code-coverage" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpunit/phpunit" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/symfony/polyfill-ctype" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/theseer/tokenizer" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/doctrine/instantiator" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/resource-operations" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/recursion-context" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/global-state" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/diff" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/exporter" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/object-enumerator" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/environment" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/comparator" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/object-reflector" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/version" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/squizlabs/php_codesniffer" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/webmozart/assert" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/dealerdirect/phpcodesniffer-composer-installer" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpdocumentor/type-resolver" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpdocumentor/reflection-common" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpcsstandards/phpcsdevtools" />
+      <path value="$USER_HOME$/WordPress-Coding-Standards/vendor/phpcompatibility/php-compatibility" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/../../../wp-includes/sodium_compat/vendor/autoload.php" />
+    </phpunit_settings>
+  </component>
+</project>
