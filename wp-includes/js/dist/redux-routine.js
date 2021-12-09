@@ -101,14 +101,16 @@ __webpack_require__.d(__webpack_exports__, "default", function() { return /* bin
 /**
  * Returns true if the given object is a generator, or false otherwise.
  *
- * @link https://www.ecma-international.org/ecma-262/6.0/#sec-generator-objects
+ * @see https://www.ecma-international.org/ecma-262/6.0/#sec-generator-objects
  *
  * @param {*} object Object to test.
  *
  * @return {boolean} Whether object is a generator.
  */
 function isGenerator(object) {
-  return !!object && object[Symbol.toStringTag] === 'Generator';
+  // Check that iterator (next) and iterable (Symbol.iterator) interfaces are satisfied.
+  // These checks seem to be compatible with several generator helpers as well as the native implementation.
+  return !!object && typeof object[Symbol.iterator] === 'function' && typeof object.next === 'function';
 }
 
 // EXTERNAL MODULE: ./node_modules/rungen/dist/index.js
@@ -167,34 +169,30 @@ function isActionOfType(object, expectedType) {
  * Create a co-routine runtime.
  *
  * @param {Object}    controls Object of control handlers.
- * @param {function}  dispatch Unhandled action dispatch.
+ * @param {Function}  dispatch Unhandled action dispatch.
  *
- * @return {function} co-routine runtime
+ * @return {Function} co-routine runtime
  */
 
-function createRuntime() {
-  var controls = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var dispatch = arguments.length > 1 ? arguments[1] : undefined;
-  var rungenControls = Object(external_lodash_["map"])(controls, function (control, actionType) {
-    return function (value, next, iterate, yieldNext, yieldError) {
-      if (!isActionOfType(value, actionType)) {
-        return false;
-      }
+function createRuntime(controls = {}, dispatch) {
+  const rungenControls = Object(external_lodash_["map"])(controls, (control, actionType) => (value, next, iterate, yieldNext, yieldError) => {
+    if (!isActionOfType(value, actionType)) {
+      return false;
+    }
 
-      var routine = control(value);
+    const routine = control(value);
 
-      if (is_promise_default()(routine)) {
-        // Async control routine awaits resolution.
-        routine.then(yieldNext, yieldError);
-      } else {
-        yieldNext(routine);
-      }
+    if (is_promise_default()(routine)) {
+      // Async control routine awaits resolution.
+      routine.then(yieldNext, yieldError);
+    } else {
+      yieldNext(routine);
+    }
 
-      return true;
-    };
+    return true;
   });
 
-  var unhandledActionControl = function unhandledActionControl(value, next) {
+  const unhandledActionControl = (value, next) => {
     if (!isAction(value)) {
       return false;
     }
@@ -205,18 +203,14 @@ function createRuntime() {
   };
 
   rungenControls.push(unhandledActionControl);
-  var rungenRuntime = Object(dist["create"])(rungenControls);
-  return function (action) {
-    return new Promise(function (resolve, reject) {
-      return rungenRuntime(action, function (result) {
-        if (isAction(result)) {
-          dispatch(result);
-        }
+  const rungenRuntime = Object(dist["create"])(rungenControls);
+  return action => new Promise((resolve, reject) => rungenRuntime(action, result => {
+    if (isAction(result)) {
+      dispatch(result);
+    }
 
-        resolve(result);
-      }, reject);
-    });
-  };
+    resolve(result);
+  }, reject));
 }
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/redux-routine/build-module/index.js
@@ -238,18 +232,15 @@ function createRuntime() {
  * @return {Function} Co-routine runtime
  */
 
-function createMiddleware() {
-  var controls = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  return function (store) {
-    var runtime = createRuntime(controls, store.dispatch);
-    return function (next) {
-      return function (action) {
-        if (!isGenerator(action)) {
-          return next(action);
-        }
+function createMiddleware(controls = {}) {
+  return store => {
+    const runtime = createRuntime(controls, store.dispatch);
+    return next => action => {
+      if (!isGenerator(action)) {
+        return next(action);
+      }
 
-        return runtime(action);
-      };
+      return runtime(action);
     };
   };
 }
@@ -294,6 +285,7 @@ exports.default = createDispatcher;
 /***/ (function(module, exports) {
 
 module.exports = isPromise;
+module.exports.default = isPromise;
 
 function isPromise(obj) {
   return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
@@ -348,7 +340,7 @@ exports.default = [call, cps];
 /***/ "YLtl":
 /***/ (function(module, exports) {
 
-(function() { module.exports = this["lodash"]; }());
+(function() { module.exports = window["lodash"]; }());
 
 /***/ }),
 

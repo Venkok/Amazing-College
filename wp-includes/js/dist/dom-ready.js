@@ -92,10 +92,25 @@ this["wp"] = this["wp"] || {}; this["wp"]["domReady"] =
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return domReady; });
+/**
+ * @typedef {() => void} Callback
+ *
+ * TODO: Remove this typedef and inline `() => void` type.
+ *
+ * This typedef is used so that a descriptive type is provided in our
+ * automatically generated documentation.
+ *
+ * An in-line type `() => void` would be preferable, but the generated
+ * documentation is `null` in that case.
+ *
+ * @see https://github.com/WordPress/gutenberg/issues/18045
+ */
+
 /**
  * Specify a function to execute when the DOM is fully loaded.
  *
- * @param {Function} callback A function to execute after the DOM is ready.
+ * @param {Callback} callback A function to execute after the DOM is ready.
  *
  * @example
  * ```js
@@ -108,18 +123,20 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @return {void}
  */
-var domReady = function domReady(callback) {
+function domReady(callback) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
   if (document.readyState === 'complete' || // DOMContentLoaded + Images/Styles/etc loaded, so we call directly.
   document.readyState === 'interactive' // DOMContentLoaded fires at this point, so we call directly.
   ) {
-      return callback();
+      return void callback();
     } // DOMContentLoaded has not fired yet, delay callback until then.
 
 
   document.addEventListener('DOMContentLoaded', callback);
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (domReady);
+}
 
 
 /***/ })
