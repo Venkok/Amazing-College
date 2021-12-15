@@ -82,6 +82,7 @@
   </div>
 </div>
 
+<!-- HERO SLIDER (STATIC)
 <div class="hero-slider">
   <div data-glide-el="track" class="glide__track">
     <div class="glide__slides">
@@ -94,6 +95,7 @@
           </div>
         </div>
       </div>
+
       <div class="hero-slider__slide" style="background-image: url(<?php echo get_theme_file_uri('/images/apples.jpg'); ?>);">
         <div class="hero-slider__interior container">
           <div class="hero-slider__overlay">
@@ -103,6 +105,7 @@
           </div>
         </div>
       </div>
+      
       <div class="hero-slider__slide" style="background-image: url(<?php echo get_theme_file_uri('/images/bread.jpg'); ?>);">
         <div class="hero-slider__interior container">
           <div class="hero-slider__overlay">
@@ -112,11 +115,48 @@
           </div>
         </div>
       </div>
+
     </div>
     <div class="slider__bullets glide__bullets" data-glide-el="controls[nav]">
     </div>
   </div>
-</div>
+</div> -->
 
-<?php get_footer();
+
+
+<div class="hero-slider">
+      <div data-glide-el="track" class="glide__track">
+        <div class="glide__slides">
+
+
+<?php  
+$slider = rwmb_meta( 'slider_group' );
+if ( ! empty( $slider ) ) {
+    foreach ( $slider as $slide ) { 
+      $image = RWMB_Image_Field::file_info( $slide['slide_image'], array( 'size' => 'slideImage' ) );
+      ?>
+
+          <div class="hero-slider__slide" style="background-image: url(<?php echo $image['url']; ?>);">
+            <div class="hero-slider__interior container">
+              <div class="hero-slider__overlay">
+                <h2 class="headline headline--medium t-center"><?php echo $slide['slide_title']; ?></h2>
+                <p class="t-center"><?php echo $slide['slide_description']; ?></p>
+                <p class="t-center no-margin"><a href="#" class="btn btn--blue">Learn more</a></p>
+              </div>
+            </div>
+          </div>
+  
+    <?php }}
+    ?>
+     
+  </div>
+
+
+<div class="slider__bullets glide__bullets" data-glide-el="controls[nav]">
+        </div>
+        </div>
+</div> 
+
+<?php 
+get_footer();
 ?>
